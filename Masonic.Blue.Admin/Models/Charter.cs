@@ -5,10 +5,10 @@ namespace Masonic.Blue.Models
 {
     public class Charter : BaseModel
     {
-        public Guid LodgeTypeId { get; set; }
+        public int LodgeTypeId { get; set; }
         public virtual LodgeType LodgeType { get; set; }
 
-        public Guid BodyTypeId { get; set; }
+        public int BodyTypeId { get; set; }
         public virtual BodyType BodyType { get; set; }
 
         public string Name { get; set; }

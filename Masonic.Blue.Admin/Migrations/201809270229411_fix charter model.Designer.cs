@@ -7,13 +7,13 @@ namespace Masonic.Blue.Admin.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Initial : IMigrationMetadata
+    public sealed partial class fixchartermodel : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Initial));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(fixchartermodel));
         
         string IMigrationMetadata.Id
         {
-            get { return "201809260023254_Initial"; }
+            get { return "201809270229411_fix charter model"; }
         }
         
         string IMigrationMetadata.Source

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -10,6 +11,7 @@ using System.Web.Mvc;
 using DataTables.AspNet.Core;
 using DataTables.AspNet.Mvc5;
 using Masonic.Blue.Admin.Models;
+using Masonic.Blue.Admin.ViewModels;
 using Masonic.Blue.Models;
 
 namespace Masonic.Blue.Admin.Controllers
@@ -21,21 +23,22 @@ namespace Masonic.Blue.Admin.Controllers
         // GET: Charters
         public async Task<ActionResult> Index()
         {
-            var charters = db.Charters.Include(c => c.BodyType).Include(c => c.LodgeType);
-            return View(await charters.ToListAsync());
+            return View();
         }
 
-        public ActionResult PageData(IDataTablesRequest request)
+        public ActionResult GetData()
         {
-            var data = db.Charters.ToList();
-
-            //var filteredData = data.Where(_item => _item.Name.Contains(request.Search.Value));
-
-            var dataPage = data.Skip(request.Start).Take(request.Length);
-
-            var response = DataTablesResponse.Create(request, data.Count(), data.Count(), dataPage);
-
-            return new DataTablesJsonResult(response, JsonRequestBehavior.AllowGet);
+            var charters = db.Charters.Include(c => c.BodyType).Include(c => c.LodgeType).Select(
+                c => new CharterListVm
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Number = c.Number,
+                    BodyType = c.BodyType.Type,
+                    LodgeType = c.LodgeType.Type,
+                    City = c.City
+                });
+            return Json(new { data = charters }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Charters/Details/5
@@ -70,7 +73,6 @@ namespace Masonic.Blue.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                charter.Id = Guid.NewGuid();
                 db.Charters.Add(charter);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -79,6 +81,34 @@ namespace Masonic.Blue.Admin.Controllers
             ViewBag.BodyTypeId = new SelectList(db.BodyTypes, "Id", "Type", charter.BodyTypeId);
             ViewBag.LodgeTypeId = new SelectList(db.LodgeTypes, "Id", "Type", charter.LodgeTypeId);
             return View(charter);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> AddOrEdit(int id = 0)
+        {
+            if (id == 0)
+            {
+                return View(new Charter());
+            }
+            else
+            {
+                return View(await db.Charters.FirstOrDefaultAsync(x => x.Id == id));
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddOrEdit(Charter currentCharter)
+        {
+            if (currentCharter.Id == 0)
+            {
+                db.Charters.Add(currentCharter);
+                await db.SaveChangesAsync();
+                return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+            }
+
+            db.Entry(currentCharter).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Charters/Edit/5

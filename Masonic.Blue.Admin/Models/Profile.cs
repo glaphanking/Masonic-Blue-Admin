@@ -4,12 +4,8 @@ using Masonic.Blue.Admin.Models;
 
 namespace Masonic.Blue.Models
 {
-    public class Profile
+    public class Profile : BaseModel
     {
-        [Key]
-        public Guid Id { get; set; }
-
-        
         public int ApplicationUserId { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }

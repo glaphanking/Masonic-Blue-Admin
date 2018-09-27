@@ -7,13 +7,13 @@ namespace Masonic.Blue.Admin.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class lodgeNumber : IMigrationMetadata
+    public sealed partial class InitialModels : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(lodgeNumber));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialModels));
         
         string IMigrationMetadata.Id
         {
-            get { return "201809260403200_lodgeNumber"; }
+            get { return "201809270217115_InitialModels"; }
         }
         
         string IMigrationMetadata.Source
